@@ -34,6 +34,8 @@ services:
         sync: false
       - key: CLOUDINARY_UPLOAD_PRESET
         sync: false
+      - key: CLOUDINARY_FOLDER
+        value: learnnest
       - key: ADMIN_EMAIL
         sync: false
       - key: ADMIN_PASSWORD

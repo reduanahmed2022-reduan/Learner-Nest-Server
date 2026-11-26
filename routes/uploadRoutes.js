@@ -124,7 +124,8 @@ async function uploadToCloudinary(file) {
     sanitizeUploadName(file.originalname),
   );
   form.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET);
-  form.append('folder', 'learnnest');
+  // Each website uses its own folder; Cloudinary creates it automatically.
+  form.append('folder', process.env.CLOUDINARY_FOLDER || 'learnnest');
 
   const response = await fetch(
     `https://api.cloudinary.com/v1_1/${encodeURIComponent(process.env.CLOUDINARY_CLOUD_NAME)}/image/upload`,
