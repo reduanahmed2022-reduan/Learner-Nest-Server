@@ -82,8 +82,13 @@ export function getAuth() {
       },
 
       // All BetterAuth models live in the pre-existing `users` collection.
+      // config/db.js already creates the unique `email_1` index, so disable
+      // BetterAuth's own email index to avoid an IndexOptionsConflict at boot.
       schema: {
-        user: { tableName: "users" },
+        user: {
+          tableName: "users",
+          fields: { email: { type: "string", index: false } },
+        },
         account: { tableName: "users" },
         session: { tableName: "users" },
         verification: { tableName: "users" },
