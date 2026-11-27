@@ -16,7 +16,7 @@ import {
   getAuth,
   isBetterAuthConfigured,
 } from "./config/betterAuth.js";
-import { CLIENT_ORIGINS, CLIENT_URL } from "./config/stripe.js";
+import { CLIENT_ORIGINS, CLIENT_URL, normalizeOrigin } from "./config/stripe.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
@@ -35,12 +35,15 @@ app.set("trust proxy", 1);
 /* -------------------------------------------------------------------------- */
 /* CORS                                                                       */
 /* -------------------------------------------------------------------------- */
-const allowedOrigins = new Set(CLIENT_ORIGINS);
+const allowedOrigins = new Set(
+  CLIENT_ORIGINS.map((origin) => normalizeOrigin(origin)).filter(Boolean),
+);
 const corsOptions = {
   origin(origin, callback) {
     // Requests without an Origin header (curl, server-to-server, health
     // probes) are not subject to browser CORS rules.
-    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    const requested = normalizeOrigin(origin);
+    if (!origin || allowedOrigins.has(requested)) return callback(null, true);
     const error = new Error(`Origin ${origin} is not allowed by CORS`);
     error.code = "CORS_NOT_ALLOWED";
     error.statusCode = 403;
