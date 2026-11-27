@@ -69,7 +69,9 @@ const requireUploadProvider = (req, res, next) => {
   return next();
 };
 
-const timeoutSignal = () => AbortSignal.timeout(45_000);
+// Vercel Hobby functions have a ~10s limit; keep uploads under it there.
+const timeoutSignal = () =>
+  AbortSignal.timeout(process.env.VERCEL ? 8_000 : 45_000);
 
 /** Primary provider: ImgBB (base64 form upload). */
 async function uploadToImgBB(file) {
