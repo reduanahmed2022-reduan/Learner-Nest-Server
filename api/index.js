@@ -11,6 +11,18 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  await ensureReady();
+  try {
+    await ensureReady();
+  } catch (error) {
+    const detail = String(error?.message || error);
+    console.error("[vercel] initialization failed:", detail);
+
+    const message = /MONGODB_URI|not configured/i.test(detail)
+      ? "Server configuration is incomplete: MONGODB_URI is missing."
+      : "Server initialization failed. Check the deployment environment variables.";
+
+    return res.status(503).json({ success: false, message });
+  }
+
   return app(req, res);
 }
