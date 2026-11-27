@@ -89,7 +89,12 @@ export function getAuth() {
           tableName: "users",
           fields: { email: { type: "string", index: false } },
         },
-        account: { tableName: "users" },
+        // All models share one collection; disable BetterAuth's automatic
+        // indexes here because our own indexes already cover these lookups.
+        account: {
+          tableName: "users",
+          fields: { userId: { type: "string", index: false } },
+        },
         session: { tableName: "users" },
         verification: { tableName: "users" },
       },
